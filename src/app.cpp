@@ -3,23 +3,55 @@
 #include <sstream>
 
 #include <cqcppsdk/cqcppsdk.h>
+#include <curl/curl.h>
 
 using namespace cq;
 using namespace std;
 using Message = cq::message::Message;
 using MessageSegment = cq::message::MessageSegment;
 
+std::string get_content(const std::string &url) {
+    std::string body;
+
+    auto curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+        auto receive = [](char *buf, size_t size, size_t count, void *data) {
+            (*static_cast<std::string *>(data)) += std::string(buf, count);
+            return size * count;
+        };
+        typedef size_t (*WriteFunction)(char *, size_t, size_t, void *);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<WriteFunction>(receive));
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &body);
+
+        curl_easy_perform(curl);
+
+        curl_easy_cleanup(curl);
+    }
+
+    return body;
+}
+
 CQ_INIT {
     on_enable([] { logging::info("启用", "插件已启用"); });
 
-    on_private_message([](const PrivateMessageEvent &event) {
+    // on_private_message([](const PrivateMessageEvent &event) {
+    //     try {
+    //         auto msgid = send_private_message(event.user_id, event.message); // 直接复读消息
+    //         logging::info_success("私聊", "私聊消息复读完成, 消息 Id: " + to_string(msgid));
+    //         send_message(event.target,
+    //                      MessageSegment::face(111) + "这是通过 message 模块构造的消息~"); // 使用 message 模块构造消息
+    //     } catch (ApiError &err) {
+    //         logging::warning("私聊", "私聊消息复读失败, 错误码: " + to_string(err.code));
+    //     }
+    // });
+
+    cq::on_private_message([](const auto &event) {
         try {
-            auto msgid = send_private_message(event.user_id, event.message); // 直接复读消息
-            logging::info_success("私聊", "私聊消息复读完成, 消息 Id: " + to_string(msgid));
-            send_message(event.target,
-                         MessageSegment::face(111) + "这是通过 message 模块构造的消息~"); // 使用 message 模块构造消息
-        } catch (ApiError &err) {
-            logging::warning("私聊", "私聊消息复读失败, 错误码: " + to_string(err.code));
+            send_message(event.target, get_content("http://www.httpbin.org/get"));
+        } catch (cq::ApiError &) {
         }
     });
 
