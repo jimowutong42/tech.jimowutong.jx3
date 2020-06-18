@@ -5,12 +5,31 @@
 #### Git 子模块
 `git submodule update --init` # 初始化 Git 子模块
 
-#### CMake
+#### CMake (已加入Curl的配置)
 CMakeLists.txt中设置项目名称、APP_ID、install路径
 
 x86
 
 UTF-8 无签名编码
+
+#### OpenSSL (Curl的HTTPS支持)
+下载、配置Perl、Nasm、nmake、dmake (详见官方文档)
+
+`perl Configure no-shared VC-WIN32 --prefix=D:\OpenSSL --openssldir=D:\OpenSSL`
+
+`nmake`
+
+`nmake install`
+
+`nmake clean`
+
+VS code配置cmake
+```
+"cmake.configureArgs": [
+    "-DCMAKE_USE_OPENSSL=ON",
+    "-DOPENSSL_ROOT_DIR=D:\\OpenSSL"
+]
+```
 
 
 ### 感谢：
@@ -24,10 +43,15 @@ https://github.com/cqmoe/cqcppsdk
 
 https://cqcppsdk.cqp.moe/
 
-### command line tool and library for transferring data with URLs
+#### command line tool and library for transferring data with URLs
 https://github.com/curl/curl
 
 https://curl.haxx.se/
+
+#### TLS/SSL and crypto library
+https://github.com/openssl/openssl
+
+https://www.openssl.org
 
 
 ### 联系：

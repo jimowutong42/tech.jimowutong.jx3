@@ -17,6 +17,9 @@ std::string get_content(const std::string &url) {
     if (curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 1L);
+        curl_easy_setopt(curl, CURLOPT_CAINFO, "res/cacert.pem");
 
         auto receive = [](char *buf, size_t size, size_t count, void *data) {
             (*static_cast<std::string *>(data)) += std::string(buf, count);
@@ -28,6 +31,10 @@ std::string get_content(const std::string &url) {
 
         curl_easy_perform(curl);
 
+        auto res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            logging::error("curl", "curl_easy_perform() failed: " + to_string(curl_easy_strerror(res)) + "\n");
+        }
         curl_easy_cleanup(curl);
     }
 
@@ -50,7 +57,8 @@ CQ_INIT {
 
     cq::on_private_message([](const auto &event) {
         try {
-            send_message(event.target, get_content("http://www.httpbin.org/get"));
+            // send_message(event.target, get_content("http://www.httpbin.org/get"));
+            send_message(event.target, get_content("https://next.jx3box.com/api/flower/price/rank?server=%E5%A4%A9%E9%B9%85%E5%9D%AA&flower=%E7%BB%A3%E7%90%83%E8%8A%B1"));
         } catch (cq::ApiError &) {
         }
     });
