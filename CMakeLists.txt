@@ -1,16 +1,13 @@
 cmake_minimum_required(VERSION 3.9)
 project(tech.jimowutong.jx3) # 填写项目名称
-
 set(CMAKE_CXX_STANDARD 17) # 设置 C++ 标准版本为 C++17, 必须
-
 option(BUILD_SHARED_LIBS "" OFF) # 设置编译静态库而不是默认的动态库
 
 add_subdirectory(extern/curl) # 添加 CMake 子目录
-
 include(extern/cqcppsdk/cqcppsdk.cmake) # 包含 SDK 的 CMake 脚本, 必须
 
 include_directories(extern/curl/include) # 添加包含目录
-
+include_directories(extern/nlohmann_json/include) # 添加包含目录
 include_directories(src) # 设置 src 目录为包含目录, 可根据实际情况修改
 
 add_definitions(-DCURL_STATICLIB) # 设置使用静态库

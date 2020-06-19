@@ -15,7 +15,9 @@ UTF-8 无签名编码
 #### OpenSSL (Curl的HTTPS支持)
 下载、配置Perl、Nasm、nmake、dmake (详见官方文档)
 
-`perl Configure no-shared VC-WIN32 --prefix=D:\OpenSSL --openssldir=D:\OpenSSL`
+`perl Configure no-shared VC-WIN32 --prefix=D:\openssl\build --openssldir=D:\openssl\build`
+
+在x86 Native Tools Command Prompt for VS 2017中：
 
 `nmake`
 
@@ -27,9 +29,11 @@ VS code配置cmake
 ```
 "cmake.configureArgs": [
     "-DCMAKE_USE_OPENSSL=ON",
-    "-DOPENSSL_ROOT_DIR=D:\\OpenSSL"
+    "-DOPENSSL_ROOT_DIR=D:\\openssl\\build"
 ]
 ```
+
+下载cacert.pem证书，并确认路径
 
 
 ### 感谢：
@@ -52,6 +56,11 @@ https://curl.haxx.se/
 https://github.com/openssl/openssl
 
 https://www.openssl.org
+
+#### JSON for Modern C++
+https://github.com/nlohmann/json
+
+https://nlohmann.github.io/json/
 
 
 ### 联系：
