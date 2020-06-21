@@ -4,3 +4,5 @@ dev
 out
 cmake-build-*
 tmp
+res/python/config.ini
+res/config.json

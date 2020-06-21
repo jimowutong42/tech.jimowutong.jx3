@@ -36,6 +36,33 @@ VS code配置cmake
 下载cacert.pem证书，并确认路径
 
 
+### 功能：
+#### 个人信息配置
+res/config.json
+
+res/python/config.ini
+
+将res中的文件放在data\app\tech.jimowutong.jx3下
+
+#### 查看签到表（TODO）
+python保存图片目录
+
+消息触发之后再截图
+
+Cookie登录？
+
+图像处理裁剪表格
+
+不同表格页的跳转
+
+#### 花价查询（TODO）
+少于5个bug修复
+
+花的颜色
+
+#### 宠物游历查询（TODO）
+
+
 ### 感谢：
 #### 酷Q
 https://cqp.cc/
