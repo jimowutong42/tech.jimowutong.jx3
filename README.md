@@ -60,7 +60,11 @@ Cookie登录？
 
 花的颜色
 
+struct MYCONFIG放在头文件？
+
 #### 宠物游历查询（TODO）
+
+#### 私聊转发（TODO）
 
 
 ### 感谢：

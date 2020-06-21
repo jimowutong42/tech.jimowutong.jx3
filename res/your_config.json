@@ -1,5 +1,4 @@
 {
-    "MY_QQ": 我的QQ号,
-    "G_beijiu": 群号,
-    "G_test": 测试群号
+    "MY_QQ": "QQ号",
+    "G_test": "群号"
 }

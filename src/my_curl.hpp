@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cqcppsdk/cqcppsdk.h>
 #include <curl/curl.h>
 
