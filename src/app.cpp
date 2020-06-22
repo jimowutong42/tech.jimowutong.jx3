@@ -24,17 +24,17 @@ CQ_INIT {
         logging::info("启用", "剑网3小助手已启用");
     });
 
-    // on_private_message([](const auto &event) {
-    //     try {
-    //         auto res = get_content(
-    //             "https://next.jx3box.com/api/flower/price/"
-    //             "rank?server=%E5%A4%A9%E9%B9%85%E5%9D%AA&flower=%E7%BB%A3%E7%90%83%E8%8A%B1");
-    //         send_message(event.target, res);
-    //         auto j = json::parse(res);
-    //         std::cout << j.dump(4) << std::endl;
-    //     } catch (cq::ApiError &) {
-    //     }
-    // });
+    on_private_message([](const MessageEvent &event) {  //测试
+        if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询（TODO）
+            auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
+            try {
+                string msg = flower_query(flower_msg, server.lower_bound(config.G_test)->second);
+                send_private_message(event.user_id, msg);
+            } catch (ApiError &err) {
+                logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
+            }
+        }
+    });
 
     // on_message([](const MessageEvent &event) {
     //     logging::debug("消息", "收到消息: " + event.message + "\n实际类型: " + typeid(event).name());
@@ -54,7 +54,7 @@ CQ_INIT {
             auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
             if (server.lower_bound(event.group_id) == server.end()) return;
             try {
-                string msg = flower_query(event.group_id, flower_msg, server.lower_bound(event.group_id)->second);
+                string msg = flower_query(flower_msg, server.lower_bound(event.group_id)->second);
                 send_group_message(event.group_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
