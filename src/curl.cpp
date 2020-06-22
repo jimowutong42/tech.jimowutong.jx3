@@ -1,4 +1,4 @@
-#include "my_curl.hpp"
+#include "curl.hpp"
 
 std::string get_content(const std::string &url) {
     std::string body;

@@ -19,7 +19,7 @@ options.binary_location = path
 options.add_argument('''--no-sandbox''')
 options.add_argument('''--disable-gpu''')
 driver = webdriver.Chrome(r'chromedriver.exe', options=options)
-driver.get(url)  # 杯酒团签到表
+driver.get(url)
 # driver.implicitly_wait(2)  # 设置隐式等待时间
 time.sleep(30)
 # driver.find_element_by_id('blankpage-button-pc').click()  # 点击登录按钮
@@ -43,7 +43,7 @@ while 1:
     cropped = img.crop((0, 0, 535, 356))  # (left, upper, right, lower)
     # print(cropped.size)
     # matplotlib.pyplot.imshow(cropped)  # 显示图片
-    cropped.save("chakanqiandaobiao.png")
+    cropped.save("../../../image/tech.jimowutong.jx3/chakanqiandaobiao.png")
     time.sleep(30)
 
 driver.quit()

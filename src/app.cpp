@@ -1,20 +1,4 @@
-#include <cqcppsdk/cqcppsdk.h>
-
-#include <fstream>
-#include <iostream>
-#include <nlohmann/json.hpp>
-#include <set>
-#include <sstream>
-
-#include "flower.hpp"
-#include "my_curl.hpp"
-
-struct MYCONFIG {
-    int MY_QQ;
-    int G_beijiu;
-    int G_nanqi;
-    int G_test;
-} myconfig;
+#include "app.hpp"
 
 using namespace cq;
 using namespace std;
@@ -30,10 +14,13 @@ CQ_INIT {
             logging::error("启用", "无法读取用户配置文件！");
         }
         auto conf = json::parse(cfgfile);
-        myconfig.MY_QQ = conf["MY_QQ"];
-        myconfig.G_beijiu = conf["G_beijiu"];
-        myconfig.G_nanqi = conf["G_nanqi"];
-        myconfig.G_test = conf["G_test"];
+        config.MY_QQ = conf["MY_QQ"];
+        config.G_beijiu = conf["G_beijiu"];
+        config.G_nanqi = conf["G_nanqi"];
+        config.G_test = conf["G_test"];
+        server.insert(std::pair<int64_t, std::string>(config.G_beijiu, "绝代天骄"));
+        server.insert(std::pair<int64_t, std::string>(config.G_nanqi, "天鹅坪"));
+        server.insert(std::pair<int64_t, std::string>(config.G_test, "天鹅坪"));
         logging::info("启用", "剑网3小助手已启用");
     });
 
@@ -55,7 +42,7 @@ CQ_INIT {
 
     on_group_message([](const GroupMessageEvent &event) {
         if (event.message == "查看签到表") {  // 查看签到表（TODO）
-            static const set<int64_t> ENABLED_GROUPS = {myconfig.G_beijiu, myconfig.G_test};
+            static const set<int64_t> ENABLED_GROUPS = {config.G_beijiu, config.G_test};
             if (ENABLED_GROUPS.count(event.group_id) == 0) return;  // 不在启用的群中, 忽略
             try {
                 string msg = MessageSegment::image("tech.jimowutong.jx3/chakanqiandaobiao.png");
@@ -65,10 +52,6 @@ CQ_INIT {
             }
         } else if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询（TODO）
             auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
-            map<int64_t, string> server;
-            server.insert(pair<int64_t, string>(myconfig.G_beijiu, "绝代天骄"));
-            server.insert(pair<int64_t, string>(myconfig.G_nanqi, "天鹅坪"));
-            server.insert(pair<int64_t, string>(myconfig.G_test, "天鹅坪"));
             if (server.lower_bound(event.group_id) == server.end()) return;
             try {
                 string msg = flower_query(event.group_id, flower_msg, server.lower_bound(event.group_id)->second);
@@ -96,4 +79,4 @@ CQ_INIT {
 
 CQ_MENU(menu_demo_1) { logging::info("菜单", "点击菜单1"); }
 
-CQ_MENU(menu_demo_2) { send_private_message(myconfig.MY_QQ, "测试"); }
+CQ_MENU(menu_demo_2) { send_private_message(config.MY_QQ, "测试"); }
