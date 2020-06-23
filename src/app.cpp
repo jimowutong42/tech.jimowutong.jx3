@@ -14,7 +14,8 @@ CQ_INIT {
             logging::error("启用", "无法读取用户配置文件！");
         }
         auto conf = json::parse(cfgfile);
-        config.MY_QQ = conf["MY_QQ"];
+        config.Q_ME = conf["Q_ME"];
+        config.Q_qiqi = conf["Q_qiqi"];
         config.G_beijiu = conf["G_beijiu"];
         config.G_nanqi = conf["G_nanqi"];
         config.G_test = conf["G_test"];
@@ -59,6 +60,16 @@ CQ_INIT {
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
             }
+        } else if(event.group_id == config.G_nanqi && event.user_id == config.Q_qiqi) { // 七七转发（TODO）
+            if ((event.message.substr(0, (to_string("官方")).size()) == "官方") &&
+                (event.message.substr((to_string("官方新闻")).size(), (to_string("来辣")).size()) == "来辣")) {
+                try {
+                    send_group_message(config.G_beijiu, event.message);
+                    send_group_message(config.G_test, event.message);
+                } catch (ApiError &err) {
+                    logging::warning("群聊", "七七转发失败, 错误码: " + to_string(err.code));
+                }
+            }
         }
 
         if (event.is_anonymous()) {
@@ -79,4 +90,4 @@ CQ_INIT {
 
 CQ_MENU(menu_demo_1) { logging::info("菜单", "点击菜单1"); }
 
-CQ_MENU(menu_demo_2) { send_private_message(config.MY_QQ, "测试"); }
+CQ_MENU(menu_demo_2) { send_private_message(config.Q_ME, "测试"); }

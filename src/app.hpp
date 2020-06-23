@@ -14,7 +14,8 @@
 #include "flower.hpp"
 
 struct MYCONFIG {
-    int MY_QQ;
+    int Q_ME;
+    int Q_qiqi;
     int G_beijiu;
     int G_nanqi;
     int G_test;
