@@ -12,6 +12,14 @@ Flower meigui("玫瑰, 玫瑰花");
 Flower baihe("百合, 百合花");
 Flower yingguangjun("荧光菌, 蘑菇, 菌菇");
 
+std::map<std::string, std::string> color = {
+    {"一级绣球花", "(白/红/紫)"},     {"二级绣球花", "(粉/黄/蓝)"},
+    {"一级郁金香", "(粉/红/黄)"},     {"二级郁金香", "(白/混)"},
+    {"一级牵牛花", "(红/绯/紫)"},     {"二级牵牛花", "(黄/蓝)"},
+    {"一级玫瑰", "(粉/红/橙/黄/蓝)"}, {"二级玫瑰", "(白/紫/黑)"},   {"三级玫瑰", "(绿/混)"},
+    {"一级百合", "(白/粉/黄)"},       {"二级百合", "(橙/绿)"},
+    {"一级荧光菌", "(白/红/黄)"},     {"二级荧光菌", "(蓝/紫)"}};
+
 std::string flower_query(const std::string& flower_msg, const std::string& server) {
     std::stringstream msg;
     msg << "收花线路-" << server;
@@ -45,7 +53,7 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
         }
         for (auto& sh : flower.items) {
             auto h = j.at(sh.sub_name).get<hua>();
-            msg << '\n' << sh.sub_name << " 最高价" << h.max << '\n';
+            msg << '\n' << sh.sub_name << color.lower_bound(sh.sub_name)->second << " 最高价" << h.max << '\n';
             if (h.maxLine.size() <= 5) {
                 for (auto& i : h.maxLine) {
                     msg << i << " ";
