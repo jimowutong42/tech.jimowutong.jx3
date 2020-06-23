@@ -53,7 +53,7 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
         }
         for (auto& sh : flower.items) {
             auto h = j.at(sh.sub_name).get<hua>();
-            msg << '\n' << sh.sub_name << color.lower_bound(sh.sub_name)->second << " 最高价" << h.max << '\n';
+            msg << '\n' << sh.sub_name << color.find(sh.sub_name)->second << " 最高价" << h.max << '\n';
             if (h.maxLine.size() <= 5) {
                 for (auto& i : h.maxLine) {
                     msg << i << " ";

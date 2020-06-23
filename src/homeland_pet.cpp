@@ -62,13 +62,14 @@ std::map<std::string, Furniture> homeland_pet = {
 
 std::string homeland_pet_query(const std::string& map_msg) {
     std::stringstream msg;
-    auto f = homeland_pet.lower_bound(map_msg)->second;
-    msg << "器物谱·" << homeland_pet.lower_bound(map_msg)->first << '\n';
-    msg << f.name << ' ' << f.type;
-    if (f.guanshang) msg << '\n' << "观赏：" << f.guanshang;
-    if (f.shiyong) msg << '\n' << "实用：" << f.shiyong;
-    if (f.jiangu) msg << '\n' << "坚固：" << f.jiangu;
-    if (f.fengshui) msg << '\n' << "风水：" << f.fengshui;
-    if (f.quwei) msg << '\n' << "趣味：" << f.quwei;
+    auto f = homeland_pet.find(map_msg);
+    if (f == homeland_pet.end()) return "";
+    msg << "器物谱·" << f->first << '\n';
+    msg << f->second.name << ' ' << f->second.type;
+    if (f->second.guanshang) msg << '\n' << "观赏：" << f->second.guanshang;
+    if (f->second.shiyong) msg << '\n' << "实用：" << f->second.shiyong;
+    if (f->second.jiangu) msg << '\n' << "坚固：" << f->second.jiangu;
+    if (f->second.fengshui) msg << '\n' << "风水：" << f->second.fengshui;
+    if (f->second.quwei) msg << '\n' << "趣味：" << f->second.quwei;
     return msg.str();
 }

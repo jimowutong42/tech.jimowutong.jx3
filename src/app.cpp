@@ -30,7 +30,7 @@ CQ_INIT {
             auto map_msg = event.message.substr((to_string("器物谱 ")).size(), size(event.message));
             try {
                 string msg = homeland_pet_query(map_msg);
-                send_private_message(event.user_id, msg);
+                if (msg.size()) send_private_message(event.user_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "器物谱查询失败, 错误码: " + to_string(err.code));
             }
@@ -53,9 +53,9 @@ CQ_INIT {
             }
         } else if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询（TODO）
             auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
-            if (server.lower_bound(event.group_id) == server.end()) return;
+            if (server.find(event.group_id) == server.end()) return;
             try {
-                string msg = flower_query(flower_msg, server.lower_bound(event.group_id)->second);
+                string msg = flower_query(flower_msg, server.find(event.group_id)->second);
                 send_group_message(event.group_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
@@ -74,7 +74,7 @@ CQ_INIT {
             auto map_msg = event.message.substr((to_string("器物谱 ")).size(), size(event.message));
             try {
                 string msg = homeland_pet_query(map_msg);
-                send_group_message(event.group_id, msg);
+                if (msg.size()) send_group_message(event.group_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "器物谱查询失败, 错误码: " + to_string(err.code));
             }
