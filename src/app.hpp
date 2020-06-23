@@ -12,6 +12,7 @@
 
 #include "curl.hpp"
 #include "flower.hpp"
+#include "homeland_pet.hpp"
 
 struct MYCONFIG {
     int Q_ME;

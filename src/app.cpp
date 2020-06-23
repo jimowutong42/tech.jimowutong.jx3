@@ -25,14 +25,14 @@ CQ_INIT {
         logging::info("启用", "剑网3小助手已启用");
     });
 
-    on_private_message([](const MessageEvent &event) {  //测试
-        if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询（TODO）
-            auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
+    on_private_message([](const MessageEvent &event) {                              //测试
+        if (event.message.substr(0, (to_string("器物谱 ")).size()) == "器物谱 ") {  // 器物谱查询（TODO）
+            auto map_msg = event.message.substr((to_string("器物谱 ")).size(), size(event.message));
             try {
-                string msg = flower_query(flower_msg, server.lower_bound(config.G_test)->second);
+                string msg = homeland_pet_query(map_msg);
                 send_private_message(event.user_id, msg);
             } catch (ApiError &err) {
-                logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
+                logging::warning("群聊", "器物谱查询失败, 错误码: " + to_string(err.code));
             }
         }
     });
@@ -60,7 +60,7 @@ CQ_INIT {
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
             }
-        } else if(event.group_id == config.G_nanqi && event.user_id == config.Q_qiqi) { // 七七转发（TODO）
+        } else if (event.group_id == config.G_nanqi && event.user_id == config.Q_qiqi) {  // 七七转发（TODO）
             if ((event.message.substr(0, (to_string("官方")).size()) == "官方") &&
                 (event.message.substr((to_string("官方新闻")).size(), (to_string("来辣")).size()) == "来辣")) {
                 try {
@@ -69,6 +69,14 @@ CQ_INIT {
                 } catch (ApiError &err) {
                     logging::warning("群聊", "七七转发失败, 错误码: " + to_string(err.code));
                 }
+            }
+        } else if (event.message.substr(0, (to_string("器物谱 ")).size()) == "器物谱 ") {  // 器物谱查询（TODO）
+            auto map_msg = event.message.substr((to_string("器物谱 ")).size(), size(event.message));
+            try {
+                string msg = homeland_pet_query(map_msg);
+                send_group_message(event.group_id, msg);
+            } catch (ApiError &err) {
+                logging::warning("群聊", "器物谱查询失败, 错误码: " + to_string(err.code));
             }
         }
 
