@@ -14,4 +14,4 @@ struct Furniture {
     int quwei;
 };
 
-std::string homeland_pet_query(const std::string& map_msg);
+std::string homeland_pet_query(const std::string &map_msg);

@@ -46,8 +46,8 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
     if (res.size() == 0) {
         cq::logging::warning("花价", "查询返回为空");
     }
-    auto j = nlohmann::json::parse(res);
     try {
+        auto j = nlohmann::json::parse(res);
         for (auto& [key, value] : j.items()) {
             flower.items.push_back({key, value});
         }
