@@ -30,27 +30,29 @@ CQ_INIT {
         stringstream msg;
         auto id = event.user_id;
         if (event.message.substr(0, (to_string("打卡")).size()) == "打卡") {
-            logging::debug("today", today());
+            logging::debug("push", "打卡; 日期：" + today());
             auto push_msg = event.message.substr((to_string("打卡")).size(), size(event.message));
             stringstream sshour;
             sshour << atof(push_msg.c_str());
             cout << "hour = " << sshour.str() << endl;
-            // auto card = get_group_member_info(event.group_id, id).card;
-            string card = "card";
-            msg << string(MessageSegment::at(id));
-            if (fabs(atof(sshour.str().c_str())) < DBL_EPSILON) {
-                msg << "打卡失败, 未记录今日学习时间";
+            auto card = get_card(id);
+            // auto card = get_group_member_info(event.group_id, id, true).card;
+            // logging::debug("push", "打卡; card = " + card);
+            msg << string(MessageSegment::at(id)) << " ";
+            if (atof(sshour.str().c_str()) <= 0) {
+                msg << "打卡失败" << endl << "未记录今日学习时间";
             } else {
                 auto res = push_write(id, card, sshour);
                 if (res.empty()) {
-                    msg << "打卡失败, 数据写入出错";
+                    msg << "打卡失败" << endl << "数据写入出错";
                 } else {
-                    msg << "打卡成功，今日学习" << res["hour"] << "小时" << endl;
-                    msg << "已打卡" << res["days"] << "天，累计学习" << res["hours"] << "小时";
+                    msg << "打卡成功" << endl;
+                    msg << "今日学习" << res["hour"] << "小时" << endl;
+                    msg << "已打卡" << res["days"] << "天，学习" << res["hours"] << "小时";
                 }
             }
         } else if (event.message == "查看") {
-            logging::debug("today", today());
+            logging::debug("push", "查看; 日期：" + today());
             msg << string(MessageSegment::at(id));
             auto res = push_read();
             if (res[id]["last"] == today()) {
@@ -59,23 +61,21 @@ CQ_INIT {
             } else {
                 msg << "今天还没有打卡哦" << endl;
                 if (res[id]["days"].empty()) {
-                    msg << "累计打卡0天，累计学习0小时";
+                    msg << "已打卡0天，学习0小时";
                 } else {
-                    msg << "累计打卡" << res[id]["days"] << "天，累计学习" << res[id]["hours"] << "小时";
+                    msg << "已打卡" << res[id]["days"] << "天，学习" << res[id]["hours"] << "小时";
                 }
             }
         } else if (event.message == "统计") {
-            logging::debug("today", today());
+            logging::debug("push", "统计; 日期：" + today());
             msg << "【打卡情况统计】";
             auto res = push_read();
             for (auto &r : res) {
-                msg << endl
-                    << r.second["card"] << " 已打卡" << r.second["days"] << "天，累计学习"
-                    << r.second["hours"] + "小时";
+                msg << endl << r.second["card"];
+                msg << " 已打卡" << r.second["days"] << "天，学习" << r.second["hours"] + "小时";
                 msg << endl << "上次打卡时间：" << r.second["last"];
             }
         }
-        msg << endl << "删档测试中，2020-6-25 07:00:00 不删档公测";
         try {
             if (msg.str().size()) send_private_message(id, msg.str());
         } catch (ApiError &err) {
@@ -136,21 +136,22 @@ CQ_INIT {
                 auto card = get_card(id);
                 // auto card = get_group_member_info(event.group_id, id, true).card;
                 // logging::debug("push", "打卡; card = " + card);
-                msg << string(MessageSegment::at(id));
-                if (fabs(atof(sshour.str().c_str())) < DBL_EPSILON) {
-                    msg << "打卡失败, 未记录今日学习时间";
+                msg << string(MessageSegment::at(id)) << " ";
+                if (atof(sshour.str().c_str()) <= 0) {
+                    msg << "打卡失败" << endl << "未记录今日学习时间";
                 } else {
                     auto res = push_write(id, card, sshour);
                     if (res.empty()) {
-                        msg << "打卡失败, 数据写入出错";
+                        msg << "打卡失败" << endl << "数据写入出错";
                     } else {
-                        msg << "打卡成功，今日学习" << res["hour"] << "小时" << endl;
-                        msg << "已打卡" << res["days"] << "天，累计学习" << res["hours"] << "小时";
+                        msg << "打卡成功" << endl;
+                        msg << "今日学习" << res["hour"] << "小时" << endl;
+                        msg << "已打卡" << res["days"] << "天，学习" << res["hours"] << "小时";
                     }
                 }
             } else if (event.message == "查看") {
                 logging::debug("push", "查看; 日期：" + today());
-                msg << string(MessageSegment::at(id));
+                msg << string(MessageSegment::at(id)) << " ";;
                 auto res = push_read();
                 if (res[id]["last"] == today()) {
                     msg << "今天已打卡，累计打卡" << res[id]["days"] << "天" << endl;
@@ -158,9 +159,9 @@ CQ_INIT {
                 } else {
                     msg << "今天还没有打卡哦" << endl;
                     if (res[id]["days"].empty()) {
-                        msg << "累计打卡0天，累计学习0小时";
+                        msg << "已打卡0天，学习0小时";
                     } else {
-                        msg << "累计打卡" << res[id]["days"] << "天，累计学习" << res[id]["hours"] << "小时";
+                        msg << "已打卡" << res[id]["days"] << "天，学习" << res[id]["hours"] << "小时";
                     }
                 }
             } else if (event.message == "统计") {
@@ -168,15 +169,13 @@ CQ_INIT {
                 msg << "【打卡情况统计】";
                 auto res = push_read();
                 for (auto &r : res) {
-                    msg << endl
-                        << r.second["card"] << " 已打卡" << r.second["days"] << "天，累计学习"
-                        << r.second["hours"] + "小时";
+                    msg << endl << r.second["card"];
+                    msg << " 已打卡" << r.second["days"] << "天，学习" << r.second["hours"] + "小时";
                     msg << endl << "上次打卡时间：" << r.second["last"];
                 }
             }
-            string testmsg = "\n删档测试中，2020-6-25 07:00:00 不删档公测";
             try {
-                if (msg.str().size()) send_group_message(event.group_id, msg.str() + testmsg);
+                if (msg.str().size()) send_group_message(event.group_id, msg.str());
             } catch (ApiError &err) {
                 logging::warning("群聊", "打卡失败, 错误码: " + to_string(err.code));
             }
