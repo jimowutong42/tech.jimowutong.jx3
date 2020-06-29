@@ -38,4 +38,8 @@ class Flower {
 
 extern std::string get_content(const std::string &url);
 
+std::string get_flower_content(const std::string& flower_msg, const std::string& server, Flower& flower);
+
 std::string flower_query(const std::string &flower_msg, const std::string &server);
+
+std::string flower_query_easy(const std::string &flower_msg, const std::string &server);

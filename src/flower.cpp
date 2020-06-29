@@ -30,10 +30,7 @@ bool compare(item a, item b) {
         return false;
 }
 
-std::string flower_query(const std::string& flower_msg, const std::string& server) {
-    std::stringstream msg;
-    msg << "【花价-" << server << "】";
-    Flower flower;
+std::string get_flower_content(const std::string& flower_msg, const std::string& server, Flower& flower) {
     if (xiuqiuhua.nickname.find(flower_msg) != xiuqiuhua.nickname.npos) {
         flower = xiuqiuhua;
     } else if (yujinxiang.nickname.find(flower_msg) != yujinxiang.nickname.npos) {
@@ -56,6 +53,14 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
     if (res.size() == 0) {
         cq::logging::warning("花价", "查询返回为空");
     }
+    return res;
+}
+
+std::string flower_query(const std::string& flower_msg, const std::string& server) {
+    std::stringstream msg;
+    msg << "【花价-" << server << "】";
+    Flower flower;
+    auto res = get_flower_content(flower_msg, server, flower);
     try {
         auto j = nlohmann::json::parse(res);
         for (auto& [key, value] : j.items()) {
@@ -71,6 +76,39 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
                 }
             } else {
                 h.maxLine.resize(5);
+                for (auto& i : h.maxLine) {
+                    msg << i.replace(i.find(" "), 1, "") << " ";
+                }
+            }
+        }
+    } catch (nlohmann::json::exception& e) {
+        cq::logging::error("json", cq::to_string(e.what()) + "; exception id: " + cq::to_string(e.id));
+    }
+    return msg.str();
+}
+
+std::string flower_query_easy(const std::string &flower_msg, const std::string &server) {
+    Flower flower;
+    std::stringstream msg;
+    auto res = get_flower_content(flower_msg, server, flower);
+    msg << "【花价-" << server << "】 " << flower.name;
+    try {
+        auto j = nlohmann::json::parse(res);
+        for (auto& [key, value] : j.items()) {
+            flower.items.push_back({key, value});
+        }
+        std::sort(flower.items.begin(), flower.items.end(), compare);
+        for (auto& sh : flower.items) {
+            auto h = j.at(sh.sub_name).get<hua>();
+            msg << '\n'
+                << sh.sub_name.substr(0, (std::string("一级")).size())
+                << color.find(sh.sub_name)->second << " ";
+            if (h.maxLine.size() < 1) {
+                for (auto& i : h.maxLine) {
+                    msg << i.replace(i.find(" "), 1, "") << " ";
+                }
+            } else {
+                h.maxLine.resize(1);
                 for (auto& i : h.maxLine) {
                     msg << i.replace(i.find(" "), 1, "") << " ";
                 }
