@@ -64,12 +64,12 @@ std::string homeland_pet_query(const std::string& map_msg) {
     std::stringstream msg;
     auto f = homeland_pet.find(map_msg);
     if (f == homeland_pet.end()) return "";
-    msg << "器物谱·" << f->first << '\n';
-    msg << f->second.name << ' ' << f->second.type;
-    if (f->second.guanshang) msg << '\n' << "观赏：" << f->second.guanshang;
-    if (f->second.shiyong) msg << '\n' << "实用：" << f->second.shiyong;
-    if (f->second.jiangu) msg << '\n' << "坚固：" << f->second.jiangu;
-    if (f->second.fengshui) msg << '\n' << "风水：" << f->second.fengshui;
-    if (f->second.quwei) msg << '\n' << "趣味：" << f->second.quwei;
+    msg << "【器物谱·" << f->first << "】" << std::endl;
+    msg << f->second.name << "（" << f->second.type << "）";
+    if (f->second.guanshang) msg << std::endl << "观赏：" << f->second.guanshang;
+    if (f->second.shiyong) msg << std::endl << "实用：" << f->second.shiyong;
+    if (f->second.jiangu) msg << std::endl << "坚固：" << f->second.jiangu;
+    if (f->second.fengshui) msg << std::endl << "风水：" << f->second.fengshui;
+    if (f->second.quwei) msg << std::endl << "趣味：" << f->second.quwei;
     return msg.str();
 }

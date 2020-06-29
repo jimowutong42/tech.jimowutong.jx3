@@ -22,7 +22,7 @@ std::map<std::string, std::string> color = {
 
 std::string flower_query(const std::string& flower_msg, const std::string& server) {
     std::stringstream msg;
-    msg << "收花线路-" << server;
+    msg << "【花价-" << server << "】";
     Flower flower;
     if (xiuqiuhua.nickname.find(flower_msg) != xiuqiuhua.nickname.npos) {
         flower = xiuqiuhua;
@@ -53,14 +53,16 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
         }
         for (auto& sh : flower.items) {
             auto h = j.at(sh.sub_name).get<hua>();
-            msg << '\n' << sh.sub_name << color.find(sh.sub_name)->second << " 最高价" << h.max << '\n';
+            msg << '\n' << sh.sub_name << color.find(sh.sub_name)->second << " [" << h.max << "]" << std::endl;
             if (h.maxLine.size() <= 5) {
                 for (auto& i : h.maxLine) {
-                    msg << i << " ";
+                    msg << i.replace(i.find(" "), 1, "") << " ";
                 }
             } else {
-                msg << (h.maxLine[0] + " " + h.maxLine[1] + " " + h.maxLine[2] + " " + h.maxLine[3] + " " +
-                        h.maxLine[4]);
+                h.maxLine.resize(5);
+                for (auto& i : h.maxLine) {
+                    msg << i.replace(i.find(" "), 1, "") << " ";
+                }
             }
         }
     } catch (nlohmann::json::exception& e) {
