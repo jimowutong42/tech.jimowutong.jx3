@@ -20,6 +20,16 @@ std::map<std::string, std::string> color = {
     {"一级百合", "(白/粉/黄)"},       {"二级百合", "(橙/绿)"},
     {"一级荧光菌", "(白/红/黄)"},     {"二级荧光菌", "(蓝/紫)"}};
 
+std::vector<std::string> comp = {"一", "二", "三"};
+
+bool compare(item a, item b) {
+    if (std::find(comp.begin(), comp.end(), a.sub_name.substr(0, (std::string("一")).size())) <
+        std::find(comp.begin(), comp.end(), b.sub_name.substr(0, (std::string("二")).size())))
+        return true;
+    else
+        return false;
+}
+
 std::string flower_query(const std::string& flower_msg, const std::string& server) {
     std::stringstream msg;
     msg << "【花价-" << server << "】";
@@ -51,6 +61,7 @@ std::string flower_query(const std::string& flower_msg, const std::string& serve
         for (auto& [key, value] : j.items()) {
             flower.items.push_back({key, value});
         }
+        std::sort(flower.items.begin(), flower.items.end(), compare);
         for (auto& sh : flower.items) {
             auto h = j.at(sh.sub_name).get<hua>();
             msg << '\n' << sh.sub_name << color.find(sh.sub_name)->second << " [" << h.max << "]" << std::endl;

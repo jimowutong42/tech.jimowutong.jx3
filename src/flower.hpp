@@ -2,6 +2,7 @@
 
 #include <cqcppsdk/cqcppsdk.h>
 
+#include <algorithm>
 #include <nlohmann/json.hpp>
 #include <sstream>
 

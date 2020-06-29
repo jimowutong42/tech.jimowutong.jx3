@@ -26,14 +26,14 @@ CQ_INIT {
         logging::info("启用", "剑网3小助手已启用");
     });
 
-    on_private_message([](const MessageEvent &event) {                              //测试
-        if (event.message.substr(0, (to_string("器物谱 ")).size()) == "器物谱 ") {  // 器物谱查询
-            auto map_msg = event.message.substr((to_string("器物谱 ")).size(), size(event.message));
+    on_private_message([](const MessageEvent &event) {                          //测试
+        if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询
+            auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
             try {
-                string msg = homeland_pet_query(map_msg);
-                if (msg.size()) send_private_message(event.user_id, msg);
+                string msg = flower_query(flower_msg, server.find(config.G_test)->second);
+                send_private_message(event.user_id, msg);
             } catch (ApiError &err) {
-                logging::warning("群聊", "器物谱查询失败, 错误码: " + to_string(err.code));
+                logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
             }
         }
     });
