@@ -52,19 +52,20 @@ CQ_INIT {
             } catch (ApiError &err) {
                 logging::warning("群聊", "发送签到表失败, 错误码: " + to_string(err.code));
             }
-        } else if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 花价查询
+        } else if (event.message.substr(0, (to_string("花价 ")).size()) == "花价 ") {  // 更简易的花价查询
             auto flower_msg = event.message.substr((to_string("花价 ")).size(), size(event.message));
             if (server.find(event.group_id) == server.end()) return;
             try {
-                string msg = flower_query(flower_msg, server.find(event.group_id)->second);
+                string msg = flower_query_easy(flower_msg, server.find(event.group_id)->second);
                 send_group_message(event.group_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
             }
-        } else if (event.message.substr(0, (to_string(" 花价")).size()) == " 花价") {  // 更简易的花价查询
+        } else if (event.message.substr(0, (to_string(" 花价")).size()) == " 花价") {  // 原版花价查询
             auto flower_msg = event.message.substr((to_string(" 花价 ")).size(), size(event.message));
+            if (server.find(event.group_id) == server.end()) return;
             try {
-                string msg = flower_query_easy(flower_msg, server.find(event.group_id)->second);
+                string msg = flower_query(flower_msg, server.find(event.group_id)->second);
                 send_group_message(event.group_id, msg);
             } catch (ApiError &err) {
                 logging::warning("群聊", "花价查询失败, 错误码: " + to_string(err.code));
