@@ -36,6 +36,12 @@ VS code配置cmake
 下载cacert.pem证书，并确认路径
 
 
+### C++ SDK开发的dll需要相关运行库！
+否则会报错：tech.jimowutong.jx3.dll 加载失败！错误：LoadLibrary 失败 (126 找不到指定的模块。)(-103)
+
+https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+
+
 
 ## 功能：
 ### 个人信息配置
