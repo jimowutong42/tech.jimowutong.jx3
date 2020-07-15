@@ -60,9 +60,18 @@ std::map<std::string, Furniture> homeland_pet = {
     {"南屏山", {"黄杨根", type[10], 0, 0, 0, 0, 0}}
 };
 
+std::string map(const std::string& map_msg) {
+    if (map_msg == "巴陵")
+        return "巴陵县";
+    else if (map_msg == "长安城")
+        return "长安内城";
+    else
+        return map_msg;
+}
+
 std::string homeland_pet_query(const std::string& map_msg) {
     std::stringstream msg;
-    auto f = homeland_pet.find(map_msg);
+    auto f = homeland_pet.find(map(map_msg));
     if (f == homeland_pet.end()) return "";
     msg << "【器物谱·" << f->first << "】" << std::endl;
     msg << f->second.name << "（" << f->second.type << "）";
